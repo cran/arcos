@@ -4,7 +4,7 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 # Uncomment and run the lines below to see if you have the packages required already installed
-# packages <- c("tidyverse", "jsonlite", "knitr", "geofacet", "scales")
+# packages <- c("dplyr", "ggplot2", "forcats", "jsonlite", "knitr", "geofacet", "scales")
 # if (length(setdiff(packages, rownames(installed.packages()))) > 0) {
 #   install.packages(setdiff(packages, rownames(installed.packages())), repos = "http://cran.us.r-project.org") # }
 
@@ -12,8 +12,10 @@ library(arcos)
 library(knitr)
 library(tigris)
 library(viridis)
-library(tidyverse)
+library(dplyr)
+library(ggplot2)
 library(scales)
+library(forcats)
 
 ## ----top_county_pharmacy-------------------------------------------------
 mingo <- total_pharmacies_county(county = "Mingo", state="WV", key="WaPo")
@@ -33,7 +35,7 @@ ggplot(mingo,
     scale_x_continuous(label=comma) +
   labs(x="Dosage units", y="", 
        title = "Pills sold at Mingo, WV pharmacies",
-       subtitle = "Between 2006 and 2012",
+       subtitle = "Between 2006 and 2014",
        caption = "Source: The Washington Post, ARCOS") +
   theme_minimal()
 
