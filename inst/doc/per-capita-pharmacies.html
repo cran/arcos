@@ -1,0 +1,2863 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Per capita pharmacies</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+<script>// Hide empty <a> tag within highlighted CodeBlock for screen reader accessibility (see https://github.com/jgm/pandoc/issues/6352#issuecomment-626106786) -->
+// v0.0.1
+// Written by JooYoung Seo (jooyoung@psu.edu) and Atsushi Yasumoto on June 1st, 2020.
+
+document.addEventListener('DOMContentLoaded', function() {
+  const codeList = document.getElementsByClassName("sourceCode");
+  for (var i = 0; i < codeList.length; i++) {
+    var linkList = codeList[i].getElementsByTagName('a');
+    for (var j = 0; j < linkList.length; j++) {
+      if (linkList[j].innerHTML === "") {
+        linkList[j].setAttribute('aria-hidden', 'true');
+      }
+    }
+  }
+});
+</script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Per capita pharmacies</h1>
+
+
+
+<p>Here’s our process for calculating pills per person within a county— figures that end up in many of our <a href="https://www.washingtonpost.com/investigations/the-opioid-crisis-15-percent-of-the-pharmacies-handled-nearly-half-of-the-pills/2019/08/12/b24bd4ee-b3c7-11e9-8f6c-7828e68cb15f_story.html">articles</a>.</p>
+<p>First, let’s load up the packages we need.</p>
+<p>There’s a lot of new ones listed here so we can make fancy tables.</p>
+<pre><code># Uncomment and run the lines below to see if you have the packages required already installed
+# packages &lt;- c(&quot;dplyr&quot;, &quot;jsonlite&quot;, &quot;knitr&quot;, &quot;geofacet&quot;, &quot;scales&quot;)
+# if (length(setdiff(packages, rownames(installed.packages()))) &gt; 0) {
+#   install.packages(setdiff(packages, rownames(installed.packages())), repos = &quot;http://cran.us.r-project.org&quot;) # }
+
+library(arcos)
+library(dplyr)
+library(lubridate)
+library(data.table)
+library(formattable)
+library(vroom)
+library(stringr)
+library(scales)
+library(knitr)</code></pre>
+<p>Let’s look at all pharmacies in West Virginia and their total oxycodone and hydrocodone pill orders.</p>
+<p>And use the <code>total_pharmacies_state()</code> function.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>west_virginia &lt;-<span class="st"> </span><span class="kw">total_pharmacies_state</span>(<span class="dt">state=</span><span class="st">&quot;WV&quot;</span>, <span class="dt">key=</span><span class="st">&quot;WaPo&quot;</span>)</span>
+<span id="cb2-2"><a href="#cb2-2"></a></span>
+<span id="cb2-3"><a href="#cb2-3"></a><span class="kw">kable</span>(<span class="kw">head</span>(west_virginia))</span></code></pre></div>
+<table style="width:100%;">
+<colgroup>
+<col width="10%"></col>
+<col width="11%"></col>
+<col width="11%"></col>
+<col width="26%"></col>
+<col width="13%"></col>
+<col width="15%"></col>
+<col width="12%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">buyer_state</th>
+<th align="left">buyer_county</th>
+<th align="left">buyer_dea_no</th>
+<th align="left">buyer_name</th>
+<th align="left">buyer_city</th>
+<th align="right">total_dosage_unit</th>
+<th align="right">total_records</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">WV</td>
+<td align="left">MINGO</td>
+<td align="left">BS7437064</td>
+<td align="left">STROSNIDER</td>
+<td align="left">KERMIT</td>
+<td align="right">13168350</td>
+<td align="right">7691</td>
+</tr>
+<tr class="even">
+<td align="left">WV</td>
+<td align="left">LOGAN</td>
+<td align="left">BF0660565</td>
+<td align="left">FAMILY DISCOUNT PHARMACY INC</td>
+<td align="left">MOUNT GAY</td>
+<td align="right">12849040</td>
+<td align="right">5680</td>
+</tr>
+<tr class="odd">
+<td align="left">WV</td>
+<td align="left">MINGO</td>
+<td align="left">BH6954401</td>
+<td align="left">HURLEY DRUG COMPANY INC</td>
+<td align="left">WILLIAMSON</td>
+<td align="right">8890370</td>
+<td align="right">11138</td>
+</tr>
+<tr class="even">
+<td align="left">WV</td>
+<td align="left">MINGO</td>
+<td align="left">FT0251227</td>
+<td align="left">TUG VALLEY PHARMACY, LLC</td>
+<td align="left">WILLIAMSON</td>
+<td align="right">8827860</td>
+<td align="right">5390</td>
+</tr>
+<tr class="odd">
+<td align="left">WV</td>
+<td align="left">GREENBRIER</td>
+<td align="left">BM8273524</td>
+<td align="left">FRITZ’S PHARMACY AND WELLNESS</td>
+<td align="left">RONCEVERTE</td>
+<td align="right">7528100</td>
+<td align="right">13997</td>
+</tr>
+<tr class="even">
+<td align="left">WV</td>
+<td align="left">MASON</td>
+<td align="left">AF6754748</td>
+<td align="left">FRUTH PHARMACY INC</td>
+<td align="left">POINT PLEASANT</td>
+<td align="right">7317220</td>
+<td align="right">9193</td>
+</tr>
+</tbody>
+</table>
+<p>Looks nice. We’ve got total_dosage_unit and total_records. We can ignore total_records for this example.</p>
+<p>Each pharmacy is listed, as well as which county it resides in.</p>
+<p>To help normalize the number of pills ordered, we need to get each county’s population in West Virginia.</p>
+<p>We can use the <code>county_population()</code> function.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>population &lt;-<span class="st"> </span><span class="kw">county_population</span>(<span class="dt">state=</span><span class="st">&quot;WV&quot;</span>, <span class="dt">key=</span><span class="st">&quot;WaPo&quot;</span>)</span>
+<span id="cb3-2"><a href="#cb3-2"></a></span>
+<span id="cb3-3"><a href="#cb3-3"></a><span class="kw">kable</span>(<span class="kw">head</span>(population))</span></code></pre></div>
+<table>
+<colgroup>
+<col width="10%"></col>
+<col width="10%"></col>
+<col width="9%"></col>
+<col width="5%"></col>
+<col width="5%"></col>
+<col width="10%"></col>
+<col width="26%"></col>
+<col width="9%"></col>
+<col width="4%"></col>
+<col width="9%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">BUYER_COUNTY</th>
+<th align="left">BUYER_STATE</th>
+<th align="left">countyfips</th>
+<th align="right">STATE</th>
+<th align="right">COUNTY</th>
+<th align="left">county_name</th>
+<th align="left">NAME</th>
+<th align="left">variable</th>
+<th align="right">year</th>
+<th align="right">population</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">BARBOUR</td>
+<td align="left">WV</td>
+<td align="left">54001</td>
+<td align="right">54</td>
+<td align="right">1</td>
+<td align="left">Barbour</td>
+<td align="left">Barbour County, West Virginia</td>
+<td align="left">B01003_001</td>
+<td align="right">2006</td>
+<td align="right">15922</td>
+</tr>
+<tr class="even">
+<td align="left">BERKELEY</td>
+<td align="left">WV</td>
+<td align="left">54003</td>
+<td align="right">54</td>
+<td align="right">3</td>
+<td align="left">Berkeley</td>
+<td align="left">Berkeley County, West Virginia</td>
+<td align="left">B01003_001</td>
+<td align="right">2006</td>
+<td align="right">96318</td>
+</tr>
+<tr class="odd">
+<td align="left">BOONE</td>
+<td align="left">WV</td>
+<td align="left">54005</td>
+<td align="right">54</td>
+<td align="right">5</td>
+<td align="left">Boone</td>
+<td align="left">Boone County, West Virginia</td>
+<td align="left">B01003_001</td>
+<td align="right">2006</td>
+<td align="right">25101</td>
+</tr>
+<tr class="even">
+<td align="left">BRAXTON</td>
+<td align="left">WV</td>
+<td align="left">54007</td>
+<td align="right">54</td>
+<td align="right">7</td>
+<td align="left">Braxton</td>
+<td align="left">Braxton County, West Virginia</td>
+<td align="left">B01003_001</td>
+<td align="right">2006</td>
+<td align="right">14585</td>
+</tr>
+<tr class="odd">
+<td align="left">BROOKE</td>
+<td align="left">WV</td>
+<td align="left">54009</td>
+<td align="right">54</td>
+<td align="right">9</td>
+<td align="left">Brooke</td>
+<td align="left">Brooke County, West Virginia</td>
+<td align="left">B01003_001</td>
+<td align="right">2006</td>
+<td align="right">24399</td>
+</tr>
+<tr class="even">
+<td align="left">CABELL</td>
+<td align="left">WV</td>
+<td align="left">54011</td>
+<td align="right">54</td>
+<td align="right">11</td>
+<td align="left">Cabell</td>
+<td align="left">Cabell County, West Virginia</td>
+<td align="left">B01003_001</td>
+<td align="right">2006</td>
+<td align="right">94943</td>
+</tr>
+</tbody>
+</table>
+<p>Alright, we have population tables but they’re annual figures.</p>
+<p>We have one number for dosage per pharmacy. We don’t need seven years of population data.</p>
+<p>So we’ll average it out.</p>
+<p>And then join it to the pharmacy list.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>population &lt;-<span class="st"> </span>population <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb4-2"><a href="#cb4-2"></a><span class="st">  </span><span class="kw">group_by</span>(BUYER_COUNTY, BUYER_STATE, countyfips) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb4-3"><a href="#cb4-3"></a><span class="st">  </span><span class="co"># Figure out the average population between available years</span></span>
+<span id="cb4-4"><a href="#cb4-4"></a><span class="st">  </span><span class="kw">summarize</span>(<span class="dt">average_population=</span><span class="kw">mean</span>(population, <span class="dt">na.rm=</span>T)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb4-5"><a href="#cb4-5"></a><span class="st">  </span><span class="co">## Have to quickly rename these columns to make them lower case so they&#39;ll join easily to the other data frame</span></span>
+<span id="cb4-6"><a href="#cb4-6"></a><span class="st">  </span><span class="kw">rename</span>(<span class="dt">buyer_county=</span>BUYER_COUNTY, <span class="dt">buyer_state=</span>BUYER_STATE)</span>
+<span id="cb4-7"><a href="#cb4-7"></a><span class="co">#&gt; `summarise()` regrouping output by &#39;BUYER_COUNTY&#39;, &#39;BUYER_STATE&#39; (override with `.groups` argument)</span></span>
+<span id="cb4-8"><a href="#cb4-8"></a></span>
+<span id="cb4-9"><a href="#cb4-9"></a><span class="co">## Join the data</span></span>
+<span id="cb4-10"><a href="#cb4-10"></a>wv_joined &lt;-<span class="st"> </span><span class="kw">left_join</span>(west_virginia, population)</span>
+<span id="cb4-11"><a href="#cb4-11"></a><span class="co">#&gt; Joining, by = c(&quot;buyer_state&quot;, &quot;buyer_county&quot;)</span></span>
+<span id="cb4-12"><a href="#cb4-12"></a></span>
+<span id="cb4-13"><a href="#cb4-13"></a><span class="kw">kable</span>(<span class="kw">head</span>(wv_joined))</span></code></pre></div>
+<table>
+<colgroup>
+<col width="8%"></col>
+<col width="8%"></col>
+<col width="8%"></col>
+<col width="20%"></col>
+<col width="10%"></col>
+<col width="12%"></col>
+<col width="9%"></col>
+<col width="7%"></col>
+<col width="13%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">buyer_state</th>
+<th align="left">buyer_county</th>
+<th align="left">buyer_dea_no</th>
+<th align="left">buyer_name</th>
+<th align="left">buyer_city</th>
+<th align="right">total_dosage_unit</th>
+<th align="right">total_records</th>
+<th align="left">countyfips</th>
+<th align="right">average_population</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">WV</td>
+<td align="left">MINGO</td>
+<td align="left">BS7437064</td>
+<td align="left">STROSNIDER</td>
+<td align="left">KERMIT</td>
+<td align="right">13168350</td>
+<td align="right">7691</td>
+<td align="left">54059</td>
+<td align="right">26752.78</td>
+</tr>
+<tr class="even">
+<td align="left">WV</td>
+<td align="left">LOGAN</td>
+<td align="left">BF0660565</td>
+<td align="left">FAMILY DISCOUNT PHARMACY INC</td>
+<td align="left">MOUNT GAY</td>
+<td align="right">12849040</td>
+<td align="right">5680</td>
+<td align="left">54045</td>
+<td align="right">36359.00</td>
+</tr>
+<tr class="odd">
+<td align="left">WV</td>
+<td align="left">MINGO</td>
+<td align="left">BH6954401</td>
+<td align="left">HURLEY DRUG COMPANY INC</td>
+<td align="left">WILLIAMSON</td>
+<td align="right">8890370</td>
+<td align="right">11138</td>
+<td align="left">54059</td>
+<td align="right">26752.78</td>
+</tr>
+<tr class="even">
+<td align="left">WV</td>
+<td align="left">MINGO</td>
+<td align="left">FT0251227</td>
+<td align="left">TUG VALLEY PHARMACY, LLC</td>
+<td align="left">WILLIAMSON</td>
+<td align="right">8827860</td>
+<td align="right">5390</td>
+<td align="left">54059</td>
+<td align="right">26752.78</td>
+</tr>
+<tr class="odd">
+<td align="left">WV</td>
+<td align="left">GREENBRIER</td>
+<td align="left">BM8273524</td>
+<td align="left">FRITZ’S PHARMACY AND WELLNESS</td>
+<td align="left">RONCEVERTE</td>
+<td align="right">7528100</td>
+<td align="right">13997</td>
+<td align="left">54025</td>
+<td align="right">35365.22</td>
+</tr>
+<tr class="even">
+<td align="left">WV</td>
+<td align="left">MASON</td>
+<td align="left">AF6754748</td>
+<td align="left">FRUTH PHARMACY INC</td>
+<td align="left">POINT PLEASANT</td>
+<td align="right">7317220</td>
+<td align="right">9193</td>
+<td align="left">54053</td>
+<td align="right">26878.56</td>
+</tr>
+</tbody>
+</table>
+<p>Now that we’ve joined the county population data to each pharmacy, we can do some math to figure out the pills per person per year.</p>
+<p>That’s pills / average population / 7</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>wv_joined &lt;-<span class="st"> </span>wv_joined <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb5-2"><a href="#cb5-2"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">per_person=</span>total_dosage_unit<span class="op">/</span>average_population<span class="op">/</span><span class="dv">7</span>)</span>
+<span id="cb5-3"><a href="#cb5-3"></a></span>
+<span id="cb5-4"><a href="#cb5-4"></a><span class="kw">kable</span>(<span class="kw">head</span>(wv_joined))</span></code></pre></div>
+<table>
+<colgroup>
+<col width="7%"></col>
+<col width="8%"></col>
+<col width="8%"></col>
+<col width="19%"></col>
+<col width="9%"></col>
+<col width="11%"></col>
+<col width="8%"></col>
+<col width="7%"></col>
+<col width="12%"></col>
+<col width="7%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">buyer_state</th>
+<th align="left">buyer_county</th>
+<th align="left">buyer_dea_no</th>
+<th align="left">buyer_name</th>
+<th align="left">buyer_city</th>
+<th align="right">total_dosage_unit</th>
+<th align="right">total_records</th>
+<th align="left">countyfips</th>
+<th align="right">average_population</th>
+<th align="right">per_person</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">WV</td>
+<td align="left">MINGO</td>
+<td align="left">BS7437064</td>
+<td align="left">STROSNIDER</td>
+<td align="left">KERMIT</td>
+<td align="right">13168350</td>
+<td align="right">7691</td>
+<td align="left">54059</td>
+<td align="right">26752.78</td>
+<td align="right">70.31766</td>
+</tr>
+<tr class="even">
+<td align="left">WV</td>
+<td align="left">LOGAN</td>
+<td align="left">BF0660565</td>
+<td align="left">FAMILY DISCOUNT PHARMACY INC</td>
+<td align="left">MOUNT GAY</td>
+<td align="right">12849040</td>
+<td align="right">5680</td>
+<td align="left">54045</td>
+<td align="right">36359.00</td>
+<td align="right">50.48481</td>
+</tr>
+<tr class="odd">
+<td align="left">WV</td>
+<td align="left">MINGO</td>
+<td align="left">BH6954401</td>
+<td align="left">HURLEY DRUG COMPANY INC</td>
+<td align="left">WILLIAMSON</td>
+<td align="right">8890370</td>
+<td align="right">11138</td>
+<td align="left">54059</td>
+<td align="right">26752.78</td>
+<td align="right">47.47368</td>
+</tr>
+<tr class="even">
+<td align="left">WV</td>
+<td align="left">MINGO</td>
+<td align="left">FT0251227</td>
+<td align="left">TUG VALLEY PHARMACY, LLC</td>
+<td align="left">WILLIAMSON</td>
+<td align="right">8827860</td>
+<td align="right">5390</td>
+<td align="left">54059</td>
+<td align="right">26752.78</td>
+<td align="right">47.13988</td>
+</tr>
+<tr class="odd">
+<td align="left">WV</td>
+<td align="left">GREENBRIER</td>
+<td align="left">BM8273524</td>
+<td align="left">FRITZ’S PHARMACY AND WELLNESS</td>
+<td align="left">RONCEVERTE</td>
+<td align="right">7528100</td>
+<td align="right">13997</td>
+<td align="left">54025</td>
+<td align="right">35365.22</td>
+<td align="right">30.40962</td>
+</tr>
+<tr class="even">
+<td align="left">WV</td>
+<td align="left">MASON</td>
+<td align="left">AF6754748</td>
+<td align="left">FRUTH PHARMACY INC</td>
+<td align="left">POINT PLEASANT</td>
+<td align="right">7317220</td>
+<td align="right">9193</td>
+<td align="left">54053</td>
+<td align="right">26878.56</td>
+<td align="right">38.89038</td>
+</tr>
+</tbody>
+</table>
+<p>Let’s make sure we’re only dealing with chain and retail pharmacies.</p>
+<p>This requires some supplemental data from <code>buyer_addresses()</code> and <code>not_pharmacies()</code></p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a></span>
+<span id="cb6-2"><a href="#cb6-2"></a><span class="co">## Get a list of addresses because it includes BUYER_BUS_ACT information</span></span>
+<span id="cb6-3"><a href="#cb6-3"></a>pharmacy_list &lt;-<span class="st"> </span><span class="kw">buyer_addresses</span>(<span class="dt">state=</span><span class="st">&quot;WV&quot;</span>, <span class="dt">key=</span><span class="st">&quot;WaPo&quot;</span>)</span>
+<span id="cb6-4"><a href="#cb6-4"></a></span>
+<span id="cb6-5"><a href="#cb6-5"></a><span class="co"># We just want the BUYER_BUS_ACT to tell if these are practitioners are retail pharmacies</span></span>
+<span id="cb6-6"><a href="#cb6-6"></a><span class="co"># This will help us filter out the appropriate pharmacies</span></span>
+<span id="cb6-7"><a href="#cb6-7"></a></span>
+<span id="cb6-8"><a href="#cb6-8"></a>pharmacy_list &lt;-<span class="st"> </span>pharmacy_list <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb6-9"><a href="#cb6-9"></a><span class="st">  </span><span class="kw">select</span>(<span class="dt">buyer_dea_no=</span>BUYER_DEA_NO, BUYER_BUS_ACT)</span>
+<span id="cb6-10"><a href="#cb6-10"></a></span>
+<span id="cb6-11"><a href="#cb6-11"></a><span class="co"># Join to the original data set</span></span>
+<span id="cb6-12"><a href="#cb6-12"></a>wv_joined &lt;-<span class="st"> </span><span class="kw">left_join</span>(wv_joined, pharmacy_list)</span>
+<span id="cb6-13"><a href="#cb6-13"></a><span class="co">#&gt; Joining, by = &quot;buyer_dea_no&quot;</span></span>
+<span id="cb6-14"><a href="#cb6-14"></a></span>
+<span id="cb6-15"><a href="#cb6-15"></a><span class="co"># Filter the data so we only have retail and chain pharmacies</span></span>
+<span id="cb6-16"><a href="#cb6-16"></a>wv_joined &lt;-<span class="st"> </span>wv_joined <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb6-17"><a href="#cb6-17"></a><span class="st">  </span><span class="kw">filter</span>(BUYER_BUS_ACT<span class="op">==</span><span class="st">&quot;RETAIL PHARMACY&quot;</span> <span class="op">|</span><span class="st"> </span>BUYER_BUS_ACT<span class="op">==</span><span class="st">&quot;CHAIN PHARMACY&quot;</span>)</span>
+<span id="cb6-18"><a href="#cb6-18"></a></span>
+<span id="cb6-19"><a href="#cb6-19"></a><span class="co"># Just in case, let&#39;s get the BUYER_DEA_NO of pharmacies that aren&#39;t really pharmacies</span></span>
+<span id="cb6-20"><a href="#cb6-20"></a>not_pharms &lt;-<span class="st"> </span><span class="kw">not_pharmacies</span>(<span class="dt">key=</span><span class="st">&quot;WaPo&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">pull</span>(BUYER_DEA_NO)</span>
+<span id="cb6-21"><a href="#cb6-21"></a></span>
+<span id="cb6-22"><a href="#cb6-22"></a><span class="co"># Filter those out, too, if they&#39;re in there</span></span>
+<span id="cb6-23"><a href="#cb6-23"></a>wv_joined &lt;-<span class="st"> </span>wv_joined <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb6-24"><a href="#cb6-24"></a><span class="st">  </span><span class="kw">filter</span>(<span class="op">!</span>buyer_dea_no <span class="op">%in%</span><span class="st"> </span>not_pharms)</span>
+<span id="cb6-25"><a href="#cb6-25"></a></span>
+<span id="cb6-26"><a href="#cb6-26"></a><span class="co"># clean up column names so we can make a pretty table</span></span>
+<span id="cb6-27"><a href="#cb6-27"></a>wv_joined &lt;-<span class="st"> </span>wv_joined <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb6-28"><a href="#cb6-28"></a><span class="st">  </span><span class="kw">select</span>(<span class="dt">Pharmacy=</span>buyer_name, <span class="dt">City=</span>buyer_city, <span class="dt">County=</span>buyer_county, <span class="st">`</span><span class="dt">County population</span><span class="st">`</span>=average_population,</span>
+<span id="cb6-29"><a href="#cb6-29"></a>         <span class="dt">Pills=</span>total_dosage_unit, <span class="st">`</span><span class="dt">Pills per person</span><span class="st">`</span>=per_person) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb6-30"><a href="#cb6-30"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="st">`</span><span class="dt">County population</span><span class="st">`</span>=<span class="kw">round</span>(<span class="st">`</span><span class="dt">County population</span><span class="st">`</span>),</span>
+<span id="cb6-31"><a href="#cb6-31"></a>         <span class="st">`</span><span class="dt">Pills per person</span><span class="st">`</span>=<span class="kw">round</span>(<span class="st">`</span><span class="dt">Pills per person</span><span class="st">`</span>, <span class="dv">1</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb6-32"><a href="#cb6-32"></a><span class="st">  </span><span class="kw">arrange</span>(<span class="kw">desc</span>(<span class="st">`</span><span class="dt">Pills per person</span><span class="st">`</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb6-33"><a href="#cb6-33"></a><span class="st">  </span><span class="kw">slice</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">100</span>)</span>
+<span id="cb6-34"><a href="#cb6-34"></a></span>
+<span id="cb6-35"><a href="#cb6-35"></a><span class="co"># Create some custome colors</span></span>
+<span id="cb6-36"><a href="#cb6-36"></a>customGreen0 =<span class="st"> &quot;#DeF7E9&quot;</span></span>
+<span id="cb6-37"><a href="#cb6-37"></a>customGreen =<span class="st"> &quot;#71CA97&quot;</span></span>
+<span id="cb6-38"><a href="#cb6-38"></a>customRed =<span class="st"> &quot;#ff7f7f&quot;</span></span>
+<span id="cb6-39"><a href="#cb6-39"></a></span>
+<span id="cb6-40"><a href="#cb6-40"></a><span class="co"># produce a table</span></span>
+<span id="cb6-41"><a href="#cb6-41"></a>wv_joined <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb6-42"><a href="#cb6-42"></a><span class="st">  </span><span class="kw">formattable</span>(<span class="dt">align=</span><span class="kw">c</span>(<span class="st">&quot;l&quot;</span>, <span class="st">&quot;l&quot;</span>, <span class="st">&quot;l&quot;</span>, <span class="st">&quot;r&quot;</span>, <span class="st">&quot;r&quot;</span>, <span class="st">&quot;r&quot;</span>),</span>
+<span id="cb6-43"><a href="#cb6-43"></a>              <span class="kw">list</span>(<span class="dt">Pharmacy =</span> <span class="kw">formatter</span>(<span class="st">&quot;span&quot;</span>, <span class="dt">style =</span> <span class="op">~</span><span class="st"> </span><span class="kw">style</span>(<span class="dt">color=</span><span class="st">&quot;grey&quot;</span>, <span class="dt">font.weight =</span> <span class="st">&quot;bold&quot;</span>)),</span>
+<span id="cb6-44"><a href="#cb6-44"></a>                   <span class="dt">Pills=</span><span class="kw">color_tile</span>(customGreen0, customGreen),</span>
+<span id="cb6-45"><a href="#cb6-45"></a>                   <span class="st">`</span><span class="dt">Pills per person</span><span class="st">`</span> =<span class="st"> </span><span class="kw">normalize_bar</span>(customRed)</span>
+<span id="cb6-46"><a href="#cb6-46"></a>                   ))</span></code></pre></div>
+<table class="table table-condensed">
+<thead>
+<tr>
+<th style="text-align:left;">
+Pharmacy
+</th>
+<th style="text-align:left;">
+City
+</th>
+<th style="text-align:left;">
+County
+</th>
+<th style="text-align:right;">
+County population
+</th>
+<th style="text-align:right;">
+Pills
+</th>
+<th style="text-align:right;">
+Pills per person
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">STROSNIDER </span>
+</td>
+<td style="text-align:left;">
+KERMIT
+</td>
+<td style="text-align:left;">
+MINGO
+</td>
+<td style="text-align:right;">
+26753
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #71ca97">13168350</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 100.00%">70.3</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">FAMILY DISCOUNT PHARMACY INC </span>
+</td>
+<td style="text-align:left;">
+MOUNT GAY
+</td>
+<td style="text-align:left;">
+LOGAN
+</td>
+<td style="text-align:right;">
+36359
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #73cb99">12849040</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 67.43%">50.5</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">HURLEY DRUG COMPANY INC </span>
+</td>
+<td style="text-align:left;">
+WILLIAMSON
+</td>
+<td style="text-align:left;">
+MINGO
+</td>
+<td style="text-align:right;">
+26753
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #95d9b2">8890370</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 62.50%">47.5</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">TUG VALLEY PHARMACY, LLC </span>
+</td>
+<td style="text-align:left;">
+WILLIAMSON
+</td>
+<td style="text-align:left;">
+MINGO
+</td>
+<td style="text-align:right;">
+26753
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #96d9b2">8827860</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 61.84%">47.1</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">LARRY’S DRIVE-IN PHARMACY INC </span>
+</td>
+<td style="text-align:left;">
+MADISON
+</td>
+<td style="text-align:left;">
+BOONE
+</td>
+<td style="text-align:right;">
+24780
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #a3debd">7227600</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 52.96%">41.7</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">FRUTH PHARMACY INC </span>
+</td>
+<td style="text-align:left;">
+POINT PLEASANT
+</td>
+<td style="text-align:left;">
+MASON
+</td>
+<td style="text-align:right;">
+26879
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #a2debc">7317220</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 48.36%">38.9</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">REED’S </span>
+</td>
+<td style="text-align:left;">
+BERKELEY SPRINGS
+</td>
+<td style="text-align:left;">
+MORGAN
+</td>
+<td style="text-align:right;">
+17295
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #bfead2">3939400</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 37.83%">32.5</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">WESTSIDE PHARMACY </span>
+</td>
+<td style="text-align:left;">
+OCEANA
+</td>
+<td style="text-align:left;">
+WYOMING
+</td>
+<td style="text-align:right;">
+23793
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #b3e5c9">5353990</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 37.17%">32.1</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">MACE’S PHARMACY INC </span>
+</td>
+<td style="text-align:left;">
+PHILIPPI
+</td>
+<td style="text-align:left;">
+BARBOUR
+</td>
+<td style="text-align:right;">
+16244
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #c2ebd4">3612930</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 36.68%">31.8</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">PHILLIPS PHARMACY </span>
+</td>
+<td style="text-align:left;">
+SAINT MARYS
+</td>
+<td style="text-align:left;">
+PLEASANTS
+</td>
+<td style="text-align:right;">
+7631
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #d3f2e0">1686260</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 36.35%">31.6</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">FRITZ’S PHARMACY AND WELLNESS </span>
+</td>
+<td style="text-align:left;">
+RONCEVERTE
+</td>
+<td style="text-align:left;">
+GREENBRIER
+</td>
+<td style="text-align:right;">
+35365
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #a1ddbb">7528100</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 34.38%">30.4</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">HIGHLANDER PHARMACY </span>
+</td>
+<td style="text-align:left;">
+WEBSTER SPRINGS
+</td>
+<td style="text-align:left;">
+WEBSTER
+</td>
+<td style="text-align:right;">
+9234
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #d0f1df">1946520</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 33.88%">30.1</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">BIG FOUR DRUG STORE INC </span>
+</td>
+<td style="text-align:left;">
+HINTON
+</td>
+<td style="text-align:left;">
+SUMMERS
+</td>
+<td style="text-align:right;">
+13739
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #caefda">2664450</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 29.93%">27.7</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">PHARMACY INC </span>
+</td>
+<td style="text-align:left;">
+CHAPMANVILLE
+</td>
+<td style="text-align:left;">
+LOGAN
+</td>
+<td style="text-align:right;">
+36359
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #a5dfbe">7032640</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 29.77%">27.6</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">PHARMACY INC </span>
+</td>
+<td style="text-align:left;">
+CHAPMANVILLE
+</td>
+<td style="text-align:left;">
+LOGAN
+</td>
+<td style="text-align:right;">
+36359
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #a5dfbe">7032640</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 29.77%">27.6</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">RITE AID OF WEST VIRGINIA, INC. </span>
+</td>
+<td style="text-align:left;">
+NEW MARTINSVILLE
+</td>
+<td style="text-align:left;">
+WETZEL
+</td>
+<td style="text-align:right;">
+16598
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #c6edd7">3168780</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 29.28%">27.3</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">JUDY’S DRUG STORE INC </span>
+</td>
+<td style="text-align:left;">
+PETERSBURG
+</td>
+<td style="text-align:left;">
+GRANT
+</td>
+<td style="text-align:right;">
+11904
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #cef0dd">2207400</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 27.96%">26.5</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">RITE AID OF WEST VIRGINIA, INC. </span>
+</td>
+<td style="text-align:left;">
+ST MARYS
+</td>
+<td style="text-align:left;">
+PLEASANTS
+</td>
+<td style="text-align:right;">
+7631
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #d6f3e3">1281320</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 23.85%">24.0</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">FOLLANSBEE PHARMACY </span>
+</td>
+<td style="text-align:left;">
+FOLLANSBEE
+</td>
+<td style="text-align:left;">
+BROOKE
+</td>
+<td style="text-align:right;">
+24069
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #c0ead2">3899940</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 22.37%">23.1</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">BATJAC OF SOUTH CAROLINA </span>
+</td>
+<td style="text-align:left;">
+MARLINTON
+</td>
+<td style="text-align:left;">
+POCAHONTAS
+</td>
+<td style="text-align:right;">
+8774
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #d5f3e2">1397320</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 21.88%">22.8</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">GIL-CO FAITH PHCY </span>
+</td>
+<td style="text-align:left;">
+GLENVILLE
+</td>
+<td style="text-align:left;">
+GILMER
+</td>
+<td style="text-align:right;">
+8283
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #d6f3e3">1320859</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 21.88%">22.8</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">FLAT IRON DRUG STORE INC </span>
+</td>
+<td style="text-align:left;">
+WELCH
+</td>
+<td style="text-align:left;">
+MCDOWELL
+</td>
+<td style="text-align:right;">
+22347
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #c4ecd5">3431120</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 20.39%">21.9</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">FRUTH PHARMACY #18 </span>
+</td>
+<td style="text-align:left;">
+SPENCER
+</td>
+<td style="text-align:left;">
+ROANE
+</td>
+<td style="text-align:right;">
+15043
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #cdf0dc">2308890</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 20.39%">21.9</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">WAL-MART PHARMACY 10-2684 </span>
+</td>
+<td style="text-align:left;">
+NEW MARTINSVILLE
+</td>
+<td style="text-align:left;">
+WETZEL
+</td>
+<td style="text-align:right;">
+16598
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ccefdb">2426050</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 18.75%">20.9</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">RITE AID OF WEST VIRGINIA, INC. </span>
+</td>
+<td style="text-align:left;">
+PT PLEASANT
+</td>
+<td style="text-align:left;">
+MASON
+</td>
+<td style="text-align:right;">
+26879
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #c0ead2">3912290</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 18.59%">20.8</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">RITE AID OF WEST VIRGINIA, INC. </span>
+</td>
+<td style="text-align:left;">
+GRAFTON
+</td>
+<td style="text-align:left;">
+TAYLOR
+</td>
+<td style="text-align:right;">
+16715
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #cdf0dc">2349790</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 17.43%">20.1</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">RITE AID OF WEST VIRGINIA, INC. </span>
+</td>
+<td style="text-align:left;">
+CLAY
+</td>
+<td style="text-align:left;">
+CLAY
+</td>
+<td style="text-align:right;">
+9572
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #d6f3e3">1280300</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 15.79%">19.1</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">BEST CARE PHARMACY INC </span>
+</td>
+<td style="text-align:left;">
+WESTON
+</td>
+<td style="text-align:left;">
+LEWIS
+</td>
+<td style="text-align:right;">
+16496
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #cef0dd">2180940</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 15.46%">18.9</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">NICHOLAS PHARMACY, INC </span>
+</td>
+<td style="text-align:left;">
+SUMMERSVILLE
+</td>
+<td style="text-align:left;">
+NICHOLAS
+</td>
+<td style="text-align:right;">
+26157
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #c4ecd5">3439100</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 15.30%">18.8</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">WEST VIRGINIA CVS PHARMACY, L.L.C. </span>
+</td>
+<td style="text-align:left;">
+GASSAWAY
+</td>
+<td style="text-align:left;">
+BRAXTON
+</td>
+<td style="text-align:right;">
+14551
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #d1f1df">1878800</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 14.64%">18.4</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">RITE AID OF WEST VIRGINIA, INC. </span>
+</td>
+<td style="text-align:left;">
+FRANKLIN
+</td>
+<td style="text-align:left;">
+PENDLETON
+</td>
+<td style="text-align:right;">
+7705
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #d8f4e5">993310</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 14.64%">18.4</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">BLACK DIAMOND PHARMACY </span>
+</td>
+<td style="text-align:left;">
+NORTHFORK
+</td>
+<td style="text-align:left;">
+MCDOWELL
+</td>
+<td style="text-align:right;">
+22347
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #c9eed9">2755760</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 13.32%">17.6</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">MICHEL’S PHARMACY </span>
+</td>
+<td style="text-align:left;">
+WEST UNION
+</td>
+<td style="text-align:left;">
+DODDRIDGE
+</td>
+<td style="text-align:right;">
+7985
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #d9f5e5">961790</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 12.66%">17.2</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">PHILLIPS DRUG LLC </span>
+</td>
+<td style="text-align:left;">
+SISTERSVILLE
+</td>
+<td style="text-align:left;">
+TYLER
+</td>
+<td style="text-align:right;">
+9249
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #d7f4e4">1105230</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 12.50%">17.1</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">TRI-STATE PHARMACY </span>
+</td>
+<td style="text-align:left;">
+WEIRTON
+</td>
+<td style="text-align:left;">
+HANCOCK
+</td>
+<td style="text-align:right;">
+30694
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #c3ebd4">3539710</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 11.51%">16.5</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">FOUR SEASONS PHARMACY INC </span>
+</td>
+<td style="text-align:left;">
+PRINCETON
+</td>
+<td style="text-align:left;">
+MERCER
+</td>
+<td style="text-align:right;">
+61867
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #a4dfbd">7099410</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 11.35%">16.4</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">MOUNDSVILLE PHARMACY </span>
+</td>
+<td style="text-align:left;">
+MOUNDSVILLE
+</td>
+<td style="text-align:left;">
+MARSHALL
+</td>
+<td style="text-align:right;">
+33215
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #c0ead3">3808030</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 11.35%">16.4</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">WAL-MART PHARMACY 10-2849 </span>
+</td>
+<td style="text-align:left;">
+MASON
+</td>
+<td style="text-align:left;">
+MASON
+</td>
+<td style="text-align:right;">
+26879
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #c7edd8">3010650</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 10.69%">16.0</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">RITE AID OF WEST VIRGINIA, INC. </span>
+</td>
+<td style="text-align:left;">
+HARRISVILLE
+</td>
+<td style="text-align:left;">
+RITCHIE
+</td>
+<td style="text-align:right;">
+10428
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #d7f4e4">1165930</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 10.69%">16.0</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">CARL WALKER’S DRUG STORE </span>
+</td>
+<td style="text-align:left;">
+GASSAWAY
+</td>
+<td style="text-align:left;">
+BRAXTON
+</td>
+<td style="text-align:right;">
+14551
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #d3f2e1">1623340</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 10.53%">15.9</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">POCAHONTAS PHARMACY </span>
+</td>
+<td style="text-align:left;">
+MARLINTON
+</td>
+<td style="text-align:left;">
+POCAHONTAS
+</td>
+<td style="text-align:right;">
+8774
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #d9f4e5">977390</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 10.53%">15.9</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">WEST VIRGINIA CVS PHARMACY, L.L.C. </span>
+</td>
+<td style="text-align:left;">
+WESTON
+</td>
+<td style="text-align:left;">
+LEWIS
+</td>
+<td style="text-align:right;">
+16496
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #d2f2e0">1793260</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 9.87%">15.5</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">DENNIS’, PHARMACY LLC </span>
+</td>
+<td style="text-align:left;">
+HAMLIN
+</td>
+<td style="text-align:left;">
+LINCOLN
+</td>
+<td style="text-align:right;">
+21860
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #cdf0dc">2349260</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 9.70%">15.4</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">WEST VIRGINIA CVS PHARMACY, L.L.C. </span>
+</td>
+<td style="text-align:left;">
+MOUNDSVILLE
+</td>
+<td style="text-align:left;">
+MARSHALL
+</td>
+<td style="text-align:right;">
+33215
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #c3ebd4">3551300</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 9.54%">15.3</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">UNITED PHARMACY GROUP </span>
+</td>
+<td style="text-align:left;">
+OCEANA
+</td>
+<td style="text-align:left;">
+WYOMING
+</td>
+<td style="text-align:right;">
+23793
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #cbefdb">2552680</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 9.54%">15.3</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">WAL-MART PHARMACY 10-2810 </span>
+</td>
+<td style="text-align:left;">
+SPENCER
+</td>
+<td style="text-align:left;">
+ROANE
+</td>
+<td style="text-align:right;">
+15043
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #d3f2e1">1612830</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 9.54%">15.3</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">CLAY FOODLAND PHARMACY </span>
+</td>
+<td style="text-align:left;">
+CLAY
+</td>
+<td style="text-align:left;">
+CLAY
+</td>
+<td style="text-align:right;">
+9572
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #d8f4e5">1003280</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 9.05%">15.0</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">WEST VIRGINIA CVS PHARMACY, L.L.C. </span>
+</td>
+<td style="text-align:left;">
+ROMNEY
+</td>
+<td style="text-align:left;">
+HAMPSHIRE
+</td>
+<td style="text-align:right;">
+23459
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ccefdc">2419200</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 8.55%">14.7</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">RITE AID OF WEST VIRGINIA, INC. </span>
+</td>
+<td style="text-align:left;">
+BRANCHLAND
+</td>
+<td style="text-align:left;">
+LINCOLN
+</td>
+<td style="text-align:right;">
+21860
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #cef0dd">2218910</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 8.22%">14.5</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">MOUNTAIN LAKE PHARMACY </span>
+</td>
+<td style="text-align:left;">
+SUMMERSVILLE
+</td>
+<td style="text-align:left;">
+NICHOLAS
+</td>
+<td style="text-align:right;">
+26157
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #cbefda">2617790</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 7.89%">14.3</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">KROGER PHARMACY </span>
+</td>
+<td style="text-align:left;">
+MADISON
+</td>
+<td style="text-align:left;">
+BOONE
+</td>
+<td style="text-align:right;">
+24780
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ccefdb">2483700</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 7.89%">14.3</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">WEST VIRGINIA CVS PHARMACY, L.L.C. </span>
+</td>
+<td style="text-align:left;">
+MOOREFIELD
+</td>
+<td style="text-align:left;">
+HARDY
+</td>
+<td style="text-align:right;">
+13801
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #d6f3e3">1331100</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 7.07%">13.8</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">PHARMACY CARE, INC. </span>
+</td>
+<td style="text-align:left;">
+PINEVILLE
+</td>
+<td style="text-align:left;">
+WYOMING
+</td>
+<td style="text-align:right;">
+23793
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #cef0dd">2262020</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 6.74%">13.6</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">KROGER PHARMACY </span>
+</td>
+<td style="text-align:left;">
+LOGAN
+</td>
+<td style="text-align:left;">
+LOGAN
+</td>
+<td style="text-align:right;">
+36359
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #c4ecd5">3441400</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 6.58%">13.5</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">RITE AID OF WEST VIRGINIA, INC. </span>
+</td>
+<td style="text-align:left;">
+WEBSTER SPRINGS
+</td>
+<td style="text-align:left;">
+WEBSTER
+</td>
+<td style="text-align:right;">
+9234
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #daf5e6">857680</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 6.25%">13.3</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">PETERSTOWN PHARMACY, LLC </span>
+</td>
+<td style="text-align:left;">
+PETERSTOWN
+</td>
+<td style="text-align:left;">
+MONROE
+</td>
+<td style="text-align:right;">
+13515
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #d6f3e3">1253120</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 6.09%">13.2</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">RITE AID OF WEST VIRGINIA, INC. </span>
+</td>
+<td style="text-align:left;">
+GRANTSVILLE
+</td>
+<td style="text-align:left;">
+CALHOUN
+</td>
+<td style="text-align:right;">
+7550
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #dbf5e7">697330</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 6.09%">13.2</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">WEST VIRGINIA CVS PHARMACY, L.L.C. </span>
+</td>
+<td style="text-align:left;">
+KEYSER
+</td>
+<td style="text-align:left;">
+MINERAL
+</td>
+<td style="text-align:right;">
+27709
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #cbefdb">2541900</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 5.92%">13.1</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">WAL-MART PHARMACY 10-2610 </span>
+</td>
+<td style="text-align:left;">
+LOGAN
+</td>
+<td style="text-align:left;">
+LOGAN
+</td>
+<td style="text-align:right;">
+36359
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #c5ecd6">3251160</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 5.43%">12.8</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">WAL-MART PHARMACY 10-1477 </span>
+</td>
+<td style="text-align:left;">
+SUMMERSVILLE
+</td>
+<td style="text-align:left;">
+NICHOLAS
+</td>
+<td style="text-align:right;">
+26157
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #cdf0dc">2329350</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 5.26%">12.7</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">RITE AID OF WEST VIRGINIA, INC. </span>
+</td>
+<td style="text-align:left;">
+GLENVILLE
+</td>
+<td style="text-align:left;">
+GILMER
+</td>
+<td style="text-align:right;">
+8283
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #dbf5e6">716400</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 4.77%">12.4</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">TOWN PHARMACY CARE </span>
+</td>
+<td style="text-align:left;">
+MAN
+</td>
+<td style="text-align:left;">
+LOGAN
+</td>
+<td style="text-align:right;">
+36359
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #c7edd7">3055510</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 4.11%">12.0</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">WAL-MART PHARMACY 10-1653 </span>
+</td>
+<td style="text-align:left;">
+WESTON
+</td>
+<td style="text-align:left;">
+LEWIS
+</td>
+<td style="text-align:right;">
+16496
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #d5f3e2">1388800</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 4.11%">12.0</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">RITE AID OF WEST VIRGINIA, INC. </span>
+</td>
+<td style="text-align:left;">
+SUTTON
+</td>
+<td style="text-align:left;">
+BRAXTON
+</td>
+<td style="text-align:right;">
+14551
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #d6f4e3">1222140</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 4.11%">12.0</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">COLONY DRUG </span>
+</td>
+<td style="text-align:left;">
+BECKLEY
+</td>
+<td style="text-align:left;">
+RALEIGH
+</td>
+<td style="text-align:right;">
+78606
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #a9e1c1">6550590</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 3.95%">11.9</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">CRAB ORCHARD PHARMACY, INC. </span>
+</td>
+<td style="text-align:left;">
+CRAB ORCHARD
+</td>
+<td style="text-align:left;">
+RALEIGH
+</td>
+<td style="text-align:right;">
+78606
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #aae1c1">6477420</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 3.78%">11.8</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">WAL-MART PHARMACY 10-2696 </span>
+</td>
+<td style="text-align:left;">
+MOOREFIELD
+</td>
+<td style="text-align:left;">
+HARDY
+</td>
+<td style="text-align:right;">
+13801
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #d7f4e4">1125820</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 3.62%">11.7</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">WEST VIRGINIA CVS PHARMACY, L.L.C. </span>
+</td>
+<td style="text-align:left;">
+SUMMERSVILLE
+</td>
+<td style="text-align:left;">
+NICHOLAS
+</td>
+<td style="text-align:right;">
+26157
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #cff0dd">2121460</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 3.45%">11.6</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">RITE AID OF WEST VIRGINIA, INC. </span>
+</td>
+<td style="text-align:left;">
+DANVILLE
+</td>
+<td style="text-align:left;">
+BOONE
+</td>
+<td style="text-align:right;">
+24780
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #d0f1de">2015250</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 3.45%">11.6</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">WELCH PHARMACY, INC </span>
+</td>
+<td style="text-align:left;">
+WELCH
+</td>
+<td style="text-align:left;">
+MCDOWELL
+</td>
+<td style="text-align:right;">
+22347
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #d2f2e0">1790640</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 3.13%">11.4</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">HARTS PHARMACY, INC. </span>
+</td>
+<td style="text-align:left;">
+HARTS
+</td>
+<td style="text-align:left;">
+LINCOLN
+</td>
+<td style="text-align:right;">
+21860
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #d2f2e0">1736300</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 2.96%">11.3</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">WAL-MART PHARMACY 10-1522 </span>
+</td>
+<td style="text-align:left;">
+ELKINS
+</td>
+<td style="text-align:left;">
+RANDOLPH
+</td>
+<td style="text-align:right;">
+29170
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #cef0dd">2220600</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 2.30%">10.9</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">STAATS PHCY &amp; HLTH CARE </span>
+</td>
+<td style="text-align:left;">
+SPENCER
+</td>
+<td style="text-align:left;">
+ROANE
+</td>
+<td style="text-align:right;">
+15043
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #d7f4e4">1145830</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 2.30%">10.9</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">BURNSVILLE DRUG STORE </span>
+</td>
+<td style="text-align:left;">
+BURNSVILLE
+</td>
+<td style="text-align:left;">
+BRAXTON
+</td>
+<td style="text-align:right;">
+14551
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #d7f4e4">1112100</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 2.30%">10.9</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">T AND J ENTERPRISES INC </span>
+</td>
+<td style="text-align:left;">
+HUNTINGTON
+</td>
+<td style="text-align:left;">
+WAYNE
+</td>
+<td style="text-align:right;">
+42322
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #c6edd6">3210690</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 2.14%">10.8</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">FRUTH </span>
+</td>
+<td style="text-align:left;">
+RIPLEY
+</td>
+<td style="text-align:left;">
+JACKSON
+</td>
+<td style="text-align:right;">
+29013
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #cef0dd">2192823</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 2.14%">10.8</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">PENN WAY PHARMACY </span>
+</td>
+<td style="text-align:left;">
+WEIRTON
+</td>
+<td style="text-align:left;">
+HANCOCK
+</td>
+<td style="text-align:right;">
+30694
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #cdf0dc">2296230</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 1.97%">10.7</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">GREENBRIER MEDICAL ARTS PHARMACY INC </span>
+</td>
+<td style="text-align:left;">
+UNION
+</td>
+<td style="text-align:left;">
+MONROE
+</td>
+<td style="text-align:right;">
+13515
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #d8f4e5">1013090</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 1.97%">10.7</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">RITE AID OF WEST VIRGINIA, INC. </span>
+</td>
+<td style="text-align:left;">
+CRAIGSVILLE
+</td>
+<td style="text-align:left;">
+NICHOLAS
+</td>
+<td style="text-align:right;">
+26157
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #d0f1df">1945700</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 1.81%">10.6</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">MEADOW RIVER HEALTH CARE ASSOCIATES, INC.</span>
+</td>
+<td style="text-align:left;">
+CRAIGSVILLE
+</td>
+<td style="text-align:left;">
+NICHOLAS
+</td>
+<td style="text-align:right;">
+26157
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #d0f1df">1944600</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 1.81%">10.6</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">RITE AID OF WEST VIRGINIA, INC. </span>
+</td>
+<td style="text-align:left;">
+HINTON
+</td>
+<td style="text-align:left;">
+SUMMERS
+</td>
+<td style="text-align:right;">
+13739
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #d8f4e5">1011540</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 1.64%">10.5</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">ARACOMA DRUG CO OF CHAPMANVIL </span>
+</td>
+<td style="text-align:left;">
+CHAPMANVILLE
+</td>
+<td style="text-align:left;">
+LOGAN
+</td>
+<td style="text-align:right;">
+36359
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #caefda">2656020</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 1.48%">10.4</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">FAM DISCNT PHCY OF STOLLINGS </span>
+</td>
+<td style="text-align:left;">
+LOGAN
+</td>
+<td style="text-align:left;">
+LOGAN
+</td>
+<td style="text-align:right;">
+36359
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #caefda">2639720</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 1.48%">10.4</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">FAM DISCNT PHCY OF STOLLINGS </span>
+</td>
+<td style="text-align:left;">
+LOGAN
+</td>
+<td style="text-align:left;">
+LOGAN
+</td>
+<td style="text-align:right;">
+36359
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #caefda">2639720</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 1.48%">10.4</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">CHARLIE’S PHARMACY OF MULLENS, LLC </span>
+</td>
+<td style="text-align:left;">
+MULLENS
+</td>
+<td style="text-align:left;">
+WYOMING
+</td>
+<td style="text-align:right;">
+23793
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #d2f2e0">1737920</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 1.48%">10.4</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">WITSCHEY’SPHARMACY </span>
+</td>
+<td style="text-align:left;">
+NEW MARTINSVILLE
+</td>
+<td style="text-align:left;">
+WETZEL
+</td>
+<td style="text-align:right;">
+16598
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #d7f4e4">1176480</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 0.99%">10.1</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">CARDINAL PHARMACY </span>
+</td>
+<td style="text-align:left;">
+ELIZABETH
+</td>
+<td style="text-align:left;">
+WIRT
+</td>
+<td style="text-align:right;">
+5768
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ddf6e8">409160</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 0.99%">10.1</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">WAL-MART PHARMACY 10-2833 </span>
+</td>
+<td style="text-align:left;">
+GRAFTON
+</td>
+<td style="text-align:left;">
+TAYLOR
+</td>
+<td style="text-align:right;">
+16715
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #d7f4e4">1164600</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 0.82%">10.0</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">HAYES PROFESSIONAL SERVICE, LLC </span>
+</td>
+<td style="text-align:left;">
+SISTERSVILLE
+</td>
+<td style="text-align:left;">
+TYLER
+</td>
+<td style="text-align:right;">
+9249
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #dbf6e7">647810</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 0.82%">10.0</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">PENNSBORO FAMILY PHARMACY </span>
+</td>
+<td style="text-align:left;">
+PENNSBORO
+</td>
+<td style="text-align:left;">
+RITCHIE
+</td>
+<td style="text-align:right;">
+10428
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #dbf5e6">721220</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 0.66%">9.9</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">CARDINAL PHARMACY </span>
+</td>
+<td style="text-align:left;">
+ELIZABETH
+</td>
+<td style="text-align:left;">
+WIRT
+</td>
+<td style="text-align:right;">
+5768
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #def7e9">399420</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 0.66%">9.9</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">RITE AID OF WEST VIRGINIA, INC. </span>
+</td>
+<td style="text-align:left;">
+WHEELING
+</td>
+<td style="text-align:left;">
+OHIO
+</td>
+<td style="text-align:right;">
+44436
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #c7edd7">3053760</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 0.49%">9.8</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">THRIFT DRUG, INC. </span>
+</td>
+<td style="text-align:left;">
+WEIRTON
+</td>
+<td style="text-align:left;">
+HANCOCK
+</td>
+<td style="text-align:right;">
+30694
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #cff0de">2107570</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 0.49%">9.8</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">RITE AID OF WEST VIRGINIA, INC. </span>
+</td>
+<td style="text-align:left;">
+RAVENSWOOD
+</td>
+<td style="text-align:left;">
+JACKSON
+</td>
+<td style="text-align:right;">
+29013
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #d0f1de">1980740</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 0.49%">9.8</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">WAL-MART PHARMACY 10-1544 </span>
+</td>
+<td style="text-align:left;">
+CLARKSBURG
+</td>
+<td style="text-align:left;">
+HARRISON
+</td>
+<td style="text-align:right;">
+68581
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #b9e7cd">4659700</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 0.33%">9.7</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">MEDICINE STOP PHARMACY </span>
+</td>
+<td style="text-align:left;">
+UNEEDA
+</td>
+<td style="text-align:left;">
+BOONE
+</td>
+<td style="text-align:right;">
+24780
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #d2f2e0">1689590</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 0.33%">9.7</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">RITE AID OF WEST VIRGINIA, INC. </span>
+</td>
+<td style="text-align:left;">
+PETERSBURG
+</td>
+<td style="text-align:left;">
+GRANT
+</td>
+<td style="text-align:right;">
+11904
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #daf5e6">806970</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 0.33%">9.7</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">RITE AID OF WEST VIRGINIA, INC. </span>
+</td>
+<td style="text-align:left;">
+BENWOOD
+</td>
+<td style="text-align:left;">
+MARSHALL
+</td>
+<td style="text-align:right;">
+33215
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #cef0dd">2225690</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 0.16%">9.6</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">RITE AID OF WEST VIRGINIA, INC. </span>
+</td>
+<td style="text-align:left;">
+BERKELEY SPRINGS
+</td>
+<td style="text-align:left;">
+MORGAN
+</td>
+<td style="text-align:right;">
+17295
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #d7f4e4">1156910</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 0.16%">9.6</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="color: grey; font-weight: bold">MAN PHARMACY </span>
+</td>
+<td style="text-align:left;">
+MAN
+</td>
+<td style="text-align:left;">
+LOGAN
+</td>
+<td style="text-align:right;">
+36359
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ccefdc">2420280</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: #ff7f7f; width: 0.00%">9.5</span>
+</td>
+</tr>
+</tbody>
+</table>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

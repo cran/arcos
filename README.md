@@ -58,7 +58,7 @@ devtools::install_github('wpinvestigative/arcos')
 
 * It’s important to remember that the number of pills in each county does not necessarily mean those pills went to people who live in that county. The data only shows us what pharmacies the pills are shipped to and nothing else.
 
-* The best way to understand the definitions of the columns and variables in this data set is to refer to the DEA’s [ARCOS handbook](https://www.deadiversion.usdoj.gov/arcos/handbook/full.pdf), which provides detailed descriptions of the records.
+* The best way to understand the definitions of the columns and variables in this data set is to refer to the DEA’s [ARCOS handbook](https://web.archive.org/web/20200418215938/https://www.deadiversion.usdoj.gov/arcos/handbook/full.pdf), which provides detailed descriptions of the records.
 
 ### Alternate ways to download summarized data
 
@@ -98,7 +98,7 @@ __Available datasets (Read the [reference page](https://wpinvestigative.github.i
 | [pharm_latlon()](https://wpinvestigative.github.io/arcos/reference/pharm_latlon.html)                             | Get latitude and longitude data for each pharmacy                               | Supplemental | 2006 - 2014 |                         | Retail Pharmacy, Chain Pharmacy                    |
 | [pharm_tracts()](https://wpinvestigative.github.io/arcos/reference/pharm_tracts.html)                             | Get census tract GEOID for each pharmacy                                        | Supplemental | 2006 - 2014 |                         | Retail Pharmacy, Chain Pharmacy                    |
 | [pharmacy_raw()](https://wpinvestigative.github.io/arcos/reference/pharmacy_raw.html)                             | Download raw prescription data for specified pharmacy into R                    | Raw          | 2006 - 2014 | Oxycodone & Hydrocodone | Retail Pharmacy, Chain Pharmacy                    |
-| [raw_data()](https://wpinvestigative.github.io/arcos/reference/raw_data.html)                                     | Download raw ARCOS data                                                         | Raw          | 2006 - 2014 | All                     | All                                                |
+| [raw_data()](https://wpinvestigative.github.io/arcos/reference/raw_data.html)                                     | Link to raw ARCOS data                                                         | Raw          | 2006 - 2014 | All                     | All                                                |
 | [reporter_addresses()](https://wpinvestigative.github.io/arcos/reference/reporter_addresses.html)                 | Get DEA designated addresses for each Reporter                                  | Raw          | 2006 - 2014 | All                     | All                                                |
 | [state_population()](https://wpinvestigative.github.io/arcos/reference/state_population.html)                     | Get annual population for states between 2006 and 2014                          | Supplemental | 2006 - 2014 |                         |                                                    |
 | [summarized_county_annual()](https://wpinvestigative.github.io/arcos/reference/summarized_county_annual.html)     | Get annual summarized pill totals by county                                     | Summarized   | 2006 - 2014 | Oxycodone & Hydrocodone | Retail Pharmacy, Chain Pharmacy, and Practitioners |

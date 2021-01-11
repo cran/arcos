@@ -1,4 +1,6 @@
-## ---- include = FALSE----------------------------------------------------
+## ---- include = FALSE---------------------------------------------------------
+options(rmarkdown.html_vignette.check_title = FALSE)
+
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
@@ -19,12 +21,12 @@ library(knitr)
 library(geofacet)
 library(scales)
 
-## ----setup---------------------------------------------------------------
+## ----setup--------------------------------------------------------------------
 states <- combined_buyer_annual(key="WaPo")
 
 kable(head(states))
 
-## ----dplyr---------------------------------------------------------------
+## ----dplyr--------------------------------------------------------------------
 annual_states <- states %>% 
   group_by(BUYER_STATE, year) %>% 
   summarize(pills=sum(DOSAGE_UNIT)) %>% 
@@ -32,7 +34,7 @@ annual_states <- states %>%
 
 kable(head(annual_states))
 
-## ----map, warning=F, message=F, fig.width=9, fig.height=7----------------
+## ----map, warning=F, message=F, fig.width=9, fig.height=7---------------------
 ggplot(annual_states, aes(year, pills)) +
   geom_col() +
   facet_geo(~ BUYER_STATE, grid = "us_state_grid2") +
@@ -44,24 +46,24 @@ ggplot(annual_states, aes(year, pills)) +
     y = "Dosage units") +
   theme(strip.text.x = element_text(size = 6))
 
-## ----population, warning=F, message=F------------------------------------
+## ----population, warning=F, message=F-----------------------------------------
 population <- state_population(key="WaPo")
 
 kable(head(population))
 
-## ----join----------------------------------------------------------------
+## ----join---------------------------------------------------------------------
 annual_states_joined <- left_join(annual_states, population) %>% 
   filter(!is.na(population))
 
 kable(head(annual_states_joined))
 
-## ----math----------------------------------------------------------------
+## ----math---------------------------------------------------------------------
 annual_states_joined <- annual_states_joined %>% 
   mutate(pills_per=pills/population)
 
 kable(head(annual_states_joined))
 
-## ----map2, warning=F, message=F, fig.width=9, fig.height=7---------------
+## ----map2, warning=F, message=F, fig.width=9, fig.height=7--------------------
 
 ggplot(annual_states_joined, aes(year, pills_per)) +
   geom_col() +

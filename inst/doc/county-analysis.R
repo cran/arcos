@@ -1,4 +1,6 @@
-## ---- include = FALSE----------------------------------------------------
+## ---- include = FALSE---------------------------------------------------------
+options(rmarkdown.html_vignette.check_title = FALSE)
+
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
@@ -17,12 +19,12 @@ library(ggplot2)
 library(scales)
 library(forcats)
 
-## ----top_county_pharmacy-------------------------------------------------
+## ----top_county_pharmacy------------------------------------------------------
 mingo <- total_pharmacies_county(county = "Mingo", state="WV", key="WaPo")
 
 kable(head(mingo))
 
-## ----top_county_pharmacy_chart, fig.width=9, fig.height=7----------------
+## ----top_county_pharmacy_chart, fig.width=9, fig.height=7---------------------
 ggplot(mingo,
        aes(x=total_dosage_unit, y=fct_reorder(buyer_name, total_dosage_unit))) +
   geom_segment(
@@ -39,12 +41,12 @@ ggplot(mingo,
        caption = "Source: The Washington Post, ARCOS") +
   theme_minimal()
 
-## ----wv_data-------------------------------------------------------------
+## ----wv_data------------------------------------------------------------------
 wv <- summarized_county_annual(state="WV", key="WaPo")
 
 kable(head(wv))
 
-## ----tigris, warning=F, message=F, quietly=T, results="hide"-------------
+## ----tigris, warning=F, message=F, quietly=T, results="hide"------------------
 ## Set the option for shapefiles to load with sf
 options(tigris_class = "sf")
 
@@ -54,7 +56,7 @@ wv_shape <- counties(state="WV", cb=T)
 ## Join the county dosage data we pulled
 wv <- left_join(wv, wv_shape, by=c("countyfips"="GEOID"))
 
-## ----facet_map, fig.width=9, fig.height=7--------------------------------
+## ----facet_map, fig.width=9, fig.height=7-------------------------------------
 # Mapping with ggplot2, sf, and viridis
 
 wv %>%
@@ -68,7 +70,7 @@ wv %>%
   theme(panel.grid.major = element_line(colour = 'transparent')) +
   labs(title="Oxycodone and hydrocodone pills in West Virginia", caption="Source: The Washington Post, ARCOS")
 
-## ----pop, warning=F, message=F, fig.width=9, fig.height=7----------------
+## ----pop, warning=F, message=F, fig.width=9, fig.height=7---------------------
 
 population <- county_population(state="WV", key="WaPo") %>% 
 # isolate the columns so it doesn't conflict in a join (there are doubles, that's why)
