@@ -783,40 +783,40 @@ library(knitr)</code></pre>
 <span id="cb6-10"><a href="#cb6-10"></a></span>
 <span id="cb6-11"><a href="#cb6-11"></a><span class="co"># Join to the original data set</span></span>
 <span id="cb6-12"><a href="#cb6-12"></a>wv_joined &lt;-<span class="st"> </span><span class="kw">left_join</span>(wv_joined, pharmacy_list)</span>
-<span id="cb6-13"><a href="#cb6-13"></a><span class="co">#&gt; Joining, by = &quot;buyer_dea_no&quot;</span></span>
-<span id="cb6-14"><a href="#cb6-14"></a></span>
-<span id="cb6-15"><a href="#cb6-15"></a><span class="co"># Filter the data so we only have retail and chain pharmacies</span></span>
-<span id="cb6-16"><a href="#cb6-16"></a>wv_joined &lt;-<span class="st"> </span>wv_joined <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb6-17"><a href="#cb6-17"></a><span class="st">  </span><span class="kw">filter</span>(BUYER_BUS_ACT<span class="op">==</span><span class="st">&quot;RETAIL PHARMACY&quot;</span> <span class="op">|</span><span class="st"> </span>BUYER_BUS_ACT<span class="op">==</span><span class="st">&quot;CHAIN PHARMACY&quot;</span>)</span>
-<span id="cb6-18"><a href="#cb6-18"></a></span>
-<span id="cb6-19"><a href="#cb6-19"></a><span class="co"># Just in case, let&#39;s get the BUYER_DEA_NO of pharmacies that aren&#39;t really pharmacies</span></span>
-<span id="cb6-20"><a href="#cb6-20"></a>not_pharms &lt;-<span class="st"> </span><span class="kw">not_pharmacies</span>(<span class="dt">key=</span><span class="st">&quot;WaPo&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">pull</span>(BUYER_DEA_NO)</span>
-<span id="cb6-21"><a href="#cb6-21"></a></span>
-<span id="cb6-22"><a href="#cb6-22"></a><span class="co"># Filter those out, too, if they&#39;re in there</span></span>
-<span id="cb6-23"><a href="#cb6-23"></a>wv_joined &lt;-<span class="st"> </span>wv_joined <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb6-24"><a href="#cb6-24"></a><span class="st">  </span><span class="kw">filter</span>(<span class="op">!</span>buyer_dea_no <span class="op">%in%</span><span class="st"> </span>not_pharms)</span>
-<span id="cb6-25"><a href="#cb6-25"></a></span>
-<span id="cb6-26"><a href="#cb6-26"></a><span class="co"># clean up column names so we can make a pretty table</span></span>
-<span id="cb6-27"><a href="#cb6-27"></a>wv_joined &lt;-<span class="st"> </span>wv_joined <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb6-28"><a href="#cb6-28"></a><span class="st">  </span><span class="kw">select</span>(<span class="dt">Pharmacy=</span>buyer_name, <span class="dt">City=</span>buyer_city, <span class="dt">County=</span>buyer_county, <span class="st">`</span><span class="dt">County population</span><span class="st">`</span>=average_population,</span>
-<span id="cb6-29"><a href="#cb6-29"></a>         <span class="dt">Pills=</span>total_dosage_unit, <span class="st">`</span><span class="dt">Pills per person</span><span class="st">`</span>=per_person) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb6-30"><a href="#cb6-30"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="st">`</span><span class="dt">County population</span><span class="st">`</span>=<span class="kw">round</span>(<span class="st">`</span><span class="dt">County population</span><span class="st">`</span>),</span>
-<span id="cb6-31"><a href="#cb6-31"></a>         <span class="st">`</span><span class="dt">Pills per person</span><span class="st">`</span>=<span class="kw">round</span>(<span class="st">`</span><span class="dt">Pills per person</span><span class="st">`</span>, <span class="dv">1</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb6-32"><a href="#cb6-32"></a><span class="st">  </span><span class="kw">arrange</span>(<span class="kw">desc</span>(<span class="st">`</span><span class="dt">Pills per person</span><span class="st">`</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb6-33"><a href="#cb6-33"></a><span class="st">  </span><span class="kw">slice</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">100</span>)</span>
-<span id="cb6-34"><a href="#cb6-34"></a></span>
-<span id="cb6-35"><a href="#cb6-35"></a><span class="co"># Create some custome colors</span></span>
-<span id="cb6-36"><a href="#cb6-36"></a>customGreen0 =<span class="st"> &quot;#DeF7E9&quot;</span></span>
-<span id="cb6-37"><a href="#cb6-37"></a>customGreen =<span class="st"> &quot;#71CA97&quot;</span></span>
-<span id="cb6-38"><a href="#cb6-38"></a>customRed =<span class="st"> &quot;#ff7f7f&quot;</span></span>
-<span id="cb6-39"><a href="#cb6-39"></a></span>
-<span id="cb6-40"><a href="#cb6-40"></a><span class="co"># produce a table</span></span>
-<span id="cb6-41"><a href="#cb6-41"></a>wv_joined <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb6-42"><a href="#cb6-42"></a><span class="st">  </span><span class="kw">formattable</span>(<span class="dt">align=</span><span class="kw">c</span>(<span class="st">&quot;l&quot;</span>, <span class="st">&quot;l&quot;</span>, <span class="st">&quot;l&quot;</span>, <span class="st">&quot;r&quot;</span>, <span class="st">&quot;r&quot;</span>, <span class="st">&quot;r&quot;</span>),</span>
-<span id="cb6-43"><a href="#cb6-43"></a>              <span class="kw">list</span>(<span class="dt">Pharmacy =</span> <span class="kw">formatter</span>(<span class="st">&quot;span&quot;</span>, <span class="dt">style =</span> <span class="op">~</span><span class="st"> </span><span class="kw">style</span>(<span class="dt">color=</span><span class="st">&quot;grey&quot;</span>, <span class="dt">font.weight =</span> <span class="st">&quot;bold&quot;</span>)),</span>
-<span id="cb6-44"><a href="#cb6-44"></a>                   <span class="dt">Pills=</span><span class="kw">color_tile</span>(customGreen0, customGreen),</span>
-<span id="cb6-45"><a href="#cb6-45"></a>                   <span class="st">`</span><span class="dt">Pills per person</span><span class="st">`</span> =<span class="st"> </span><span class="kw">normalize_bar</span>(customRed)</span>
-<span id="cb6-46"><a href="#cb6-46"></a>                   ))</span></code></pre></div>
+<span id="cb6-13"><a href="#cb6-13"></a></span>
+<span id="cb6-14"><a href="#cb6-14"></a><span class="co"># Filter the data so we only have retail and chain pharmacies</span></span>
+<span id="cb6-15"><a href="#cb6-15"></a>wv_joined &lt;-<span class="st"> </span>wv_joined <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb6-16"><a href="#cb6-16"></a><span class="st">  </span><span class="kw">filter</span>(BUYER_BUS_ACT<span class="op">==</span><span class="st">&quot;RETAIL PHARMACY&quot;</span> <span class="op">|</span><span class="st"> </span>BUYER_BUS_ACT<span class="op">==</span><span class="st">&quot;CHAIN PHARMACY&quot;</span>)</span>
+<span id="cb6-17"><a href="#cb6-17"></a></span>
+<span id="cb6-18"><a href="#cb6-18"></a><span class="co"># Just in case, let&#39;s get the BUYER_DEA_NO of pharmacies that aren&#39;t really pharmacies</span></span>
+<span id="cb6-19"><a href="#cb6-19"></a>not_pharms &lt;-<span class="st"> </span><span class="kw">not_pharmacies</span>(<span class="dt">key=</span><span class="st">&quot;WaPo&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">pull</span>(BUYER_DEA_NO)</span>
+<span id="cb6-20"><a href="#cb6-20"></a></span>
+<span id="cb6-21"><a href="#cb6-21"></a><span class="co"># Filter those out, too, if they&#39;re in there</span></span>
+<span id="cb6-22"><a href="#cb6-22"></a>wv_joined &lt;-<span class="st"> </span>wv_joined <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb6-23"><a href="#cb6-23"></a><span class="st">  </span><span class="kw">filter</span>(<span class="op">!</span>buyer_dea_no <span class="op">%in%</span><span class="st"> </span>not_pharms)</span>
+<span id="cb6-24"><a href="#cb6-24"></a></span>
+<span id="cb6-25"><a href="#cb6-25"></a><span class="co"># clean up column names so we can make a pretty table</span></span>
+<span id="cb6-26"><a href="#cb6-26"></a>wv_joined &lt;-<span class="st"> </span>wv_joined <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb6-27"><a href="#cb6-27"></a><span class="st">  </span><span class="kw">select</span>(<span class="dt">Pharmacy=</span>buyer_name, <span class="dt">City=</span>buyer_city, <span class="dt">County=</span>buyer_county, <span class="st">`</span><span class="dt">County population</span><span class="st">`</span>=average_population,</span>
+<span id="cb6-28"><a href="#cb6-28"></a>         <span class="dt">Pills=</span>total_dosage_unit, <span class="st">`</span><span class="dt">Pills per person</span><span class="st">`</span>=per_person) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb6-29"><a href="#cb6-29"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="st">`</span><span class="dt">County population</span><span class="st">`</span>=<span class="kw">round</span>(<span class="st">`</span><span class="dt">County population</span><span class="st">`</span>),</span>
+<span id="cb6-30"><a href="#cb6-30"></a>         <span class="st">`</span><span class="dt">Pills per person</span><span class="st">`</span>=<span class="kw">round</span>(<span class="st">`</span><span class="dt">Pills per person</span><span class="st">`</span>, <span class="dv">1</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb6-31"><a href="#cb6-31"></a><span class="st">  </span><span class="kw">arrange</span>(<span class="kw">desc</span>(<span class="st">`</span><span class="dt">Pills per person</span><span class="st">`</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb6-32"><a href="#cb6-32"></a><span class="st">  </span><span class="kw">slice</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">100</span>)</span>
+<span id="cb6-33"><a href="#cb6-33"></a></span>
+<span id="cb6-34"><a href="#cb6-34"></a><span class="co"># Create some custome colors</span></span>
+<span id="cb6-35"><a href="#cb6-35"></a>customGreen0 =<span class="st"> &quot;#DeF7E9&quot;</span></span>
+<span id="cb6-36"><a href="#cb6-36"></a>customGreen =<span class="st"> &quot;#71CA97&quot;</span></span>
+<span id="cb6-37"><a href="#cb6-37"></a>customRed =<span class="st"> &quot;#ff7f7f&quot;</span></span>
+<span id="cb6-38"><a href="#cb6-38"></a></span>
+<span id="cb6-39"><a href="#cb6-39"></a><span class="co"># produce a table</span></span>
+<span id="cb6-40"><a href="#cb6-40"></a>wv_joined <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb6-41"><a href="#cb6-41"></a><span class="st">  </span><span class="kw">formattable</span>(<span class="dt">align=</span><span class="kw">c</span>(<span class="st">&quot;l&quot;</span>, <span class="st">&quot;l&quot;</span>, <span class="st">&quot;l&quot;</span>, <span class="st">&quot;r&quot;</span>, <span class="st">&quot;r&quot;</span>, <span class="st">&quot;r&quot;</span>),</span>
+<span id="cb6-42"><a href="#cb6-42"></a>              <span class="kw">list</span>(<span class="dt">Pharmacy =</span> <span class="kw">formatter</span>(<span class="st">&quot;span&quot;</span>, <span class="dt">style =</span> <span class="op">~</span><span class="st"> </span><span class="kw">style</span>(<span class="dt">color=</span><span class="st">&quot;grey&quot;</span>, <span class="dt">font.weight =</span> <span class="st">&quot;bold&quot;</span>)),</span>
+<span id="cb6-43"><a href="#cb6-43"></a>                   <span class="dt">Pills=</span><span class="kw">color_tile</span>(customGreen0, customGreen),</span>
+<span id="cb6-44"><a href="#cb6-44"></a>                   <span class="st">`</span><span class="dt">Pills per person</span><span class="st">`</span> =<span class="st"> </span><span class="kw">normalize_bar</span>(customRed)</span>
+<span id="cb6-45"><a href="#cb6-45"></a>                   ))</span></code></pre></div>
+<pre><code>#&gt; Joining, by = &quot;buyer_dea_no&quot;</code></pre>
 <table class="table table-condensed">
 <thead>
 <tr>

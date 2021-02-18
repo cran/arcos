@@ -21,8 +21,13 @@ library(scales)
 library(zoo)
 library(knitr)
 
-## ----buyer--------------------------------------------------------------------
-pharm <- buyer_addresses(county = "Seminole", state="FL", key="WaPo")
+## ----buyer, eval=F------------------------------------------------------------
+#  pharm <- buyer_addresses(county = "Seminole", state="FL", key="WaPo")
+#  
+#  glimpse(pharm)
+
+## ----buyer_real, echo=F-------------------------------------------------------
+pharm <- readRDS("data/seminole_pharms.RDS")
 
 glimpse(pharm)
 
@@ -32,8 +37,13 @@ pharm <- filter(pharm,
 
 kable(pharm)
 
-## ----oviedo-------------------------------------------------------------------
-pharm1 <- pharmacy_raw(buyer_dea_no = "BW8487438", key = "WaPo")
+## ----oviedo, eval=F-----------------------------------------------------------
+#  pharm1 <- pharmacy_raw(buyer_dea_no = "BW8487438", key = "WaPo")
+#  
+#  glimpse(pharm1)
+
+## ----oviedo_real, echo=F------------------------------------------------------
+pharm1 <- readRDS("data/solo_pharm.RDS")
 
 glimpse(pharm1)
 

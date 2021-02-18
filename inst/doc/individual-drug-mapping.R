@@ -19,17 +19,30 @@ library(tidyr)
 library(scales)
 library(leaflet)
 
-## ----drug_list, warning=F, message=F------------------------------------------
-# what drugs are there
+## ----drug_list, warning=F, message=F, eval=F----------------------------------
+#  # what drugs are there
+#  
+#  drugs <- drug_list(key="WaPo")
+#  
+#  drugs
 
-drugs <- drug_list(key="WaPo")
+## ----drug_list_real, warning=F, message=F, echo=F-----------------------------
+# what drugs are there
+drugs <- readRDS("data/drugs_list.RDS")
 
 drugs
 
-## ----methadone, warning=F, message=F------------------------------------------
-# okay, we want METHADONE from Suffolk County
+## ----methadone, warning=F, message=F, eval=F----------------------------------
+#  # okay, we want METHADONE from Suffolk County
+#  
+#  methadone <- drug_county_biz(drug = "METHADONE", county = "Suffolk", state = "MA", key = "WaPo")
+#  
+#  # how big is this file
+#  
+#  nrow(methadone)
 
-methadone <- drug_county_biz(drug = "METHADONE", county = "Suffolk", state = "MA", key = "WaPo")
+## ----methadone_real, warning=F, message=F, echo=F-----------------------------
+methadone <- readRDS("data/methadone.RDS")
 
 # how big is this file
 
@@ -138,7 +151,10 @@ detox <- tribble(
 buyers_detox <- left_join(buyers_detox, detox)
 
 # Now that buyers_pharm and buyers_detox both have lat and lon data, we can join them
-buyers <- rbind(buyers_pharm, buyers_detox)
+buyers <- rbind(buyers_pharm, buyers_detox) 
+
+buyers <- buyers %>% 
+  filter(!is.na(lon))
 
 # Just ordering the data frame for mapping purposes
 buyers <- buyers %>% 

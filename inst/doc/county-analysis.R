@@ -19,8 +19,13 @@ library(ggplot2)
 library(scales)
 library(forcats)
 
-## ----top_county_pharmacy------------------------------------------------------
-mingo <- total_pharmacies_county(county = "Mingo", state="WV", key="WaPo")
+## ----top_county_pharmacy, eval=F----------------------------------------------
+#  mingo <- total_pharmacies_county(county = "Mingo", state="WV", key="WaPo")
+#  
+#  kable(head(mingo))
+
+## ----top_county_pharmacy_real, cho=F------------------------------------------
+mingo <- readRDS("data/mingo.RDS")
 
 kable(head(mingo))
 
@@ -41,24 +46,49 @@ ggplot(mingo,
        caption = "Source: The Washington Post, ARCOS") +
   theme_minimal()
 
-## ----wv_data------------------------------------------------------------------
-wv <- summarized_county_annual(state="WV", key="WaPo")
+## ----wv_data, eval=F----------------------------------------------------------
+#  wv <- summarized_county_annual(state="WV", key="WaPo")
+#  
+#  kable(head(wv))
+
+## ----wv_data_real, echo=F-----------------------------------------------------
+wv <- readRDS("data/wv.RDS")
 
 kable(head(wv))
 
-## ----tigris, warning=F, message=F, quietly=T, results="hide"------------------
-## Set the option for shapefiles to load with sf
-options(tigris_class = "sf")
+## ----tigris, warning=F, message=F, quietly=T, results="hide", eval=F----------
+#  ## Set the option for shapefiles to load with sf
+#  options(tigris_class = "sf")
+#  
+#  ## Function to download county shapefiles in West Virginia
+#  wv_shape <- counties(state="WV", cb=T)
+#  
+#  ## Join the county dosage data we pulled
+#  wv <- left_join(wv, wv_shape, by=c("countyfips"="GEOID"))
 
-## Function to download county shapefiles in West Virginia
-wv_shape <- counties(state="WV", cb=T)
+## ----tigris_real, warning=F, message=F, quietly=T, results="hide", echo=F-----
+wv_shape <- readRDS("data/wv_shape.RDS")
 
 ## Join the county dosage data we pulled
 wv <- left_join(wv, wv_shape, by=c("countyfips"="GEOID"))
 
-## ----facet_map, fig.width=9, fig.height=7-------------------------------------
-# Mapping with ggplot2, sf, and viridis
+## ----facet_map, fig.width=9, fig.height=7, eval=F-----------------------------
+#  # Mapping with ggplot2, sf, and viridis
+#  
+#  wv %>%
+#    ggplot(aes(geometry=geometry, fill = DOSAGE_UNIT, color = DOSAGE_UNIT)) +
+#    facet_wrap(~year, ncol=2) +
+#    geom_sf() +
+#    coord_sf(crs = 26915) +
+#    scale_fill_viridis(direction=-1, label = comma) +
+#    scale_color_viridis(direction=-1, label = comma) +
+#    theme_void() +
+#    theme(panel.grid.major = element_line(colour = 'transparent')) +
+#    labs(title="Oxycodone and hydrocodone pills in West Virginia", caption="Source: The Washington Post, ARCOS")
 
+## ----facet_map_real, fig.width=9, fig.height=7, echo=F------------------------
+# Mapping with ggplot2, sf, and viridis
+wv <- readRDS("data/wv_facet.RDS")
 wv %>%
   ggplot(aes(geometry=geometry, fill = DOSAGE_UNIT, color = DOSAGE_UNIT)) +
   facet_wrap(~year, ncol=2) +
@@ -70,11 +100,27 @@ wv %>%
   theme(panel.grid.major = element_line(colour = 'transparent')) +
   labs(title="Oxycodone and hydrocodone pills in West Virginia", caption="Source: The Washington Post, ARCOS")
 
-## ----pop, warning=F, message=F, fig.width=9, fig.height=7---------------------
+## ----pop, warning=F, message=F, fig.width=9, fig.height=7, eval=F-------------
+#  
+#  population <- county_population(state="WV", key="WaPo") %>%
+#  # isolate the columns so it doesn't conflict in a join (there are doubles, that's why)
+#      select(countyfips, year, population)
+#  
+#  left_join(wv, population) %>%
+#    mutate(per_person=DOSAGE_UNIT/population) %>%
+#    ggplot(aes(geometry=geometry, fill = per_person, color = per_person)) +
+#    facet_wrap(~year, ncol=2) +
+#    geom_sf() +
+#    coord_sf(crs = 26915) +
+#    scale_fill_viridis(direction=-1, label = comma) +
+#    scale_color_viridis(direction=-1, label = comma) +
+#    theme_void() +
+#    theme(panel.grid.major = element_line(colour = 'transparent')) +
+#    labs(title="Oxycodone and hydrocodone pills in West Virginia per person", caption="Source: The Washington Post, ARCOS")
 
-population <- county_population(state="WV", key="WaPo") %>% 
-# isolate the columns so it doesn't conflict in a join (there are doubles, that's why)
-    select(countyfips, year, population)
+## ----pop_real, warning=F, message=F, fig.width=9, fig.height=7, echo=F--------
+
+population <- readRDS("data/wvpop.RDS")
 
 left_join(wv, population) %>% 
   mutate(per_person=DOSAGE_UNIT/population) %>%
@@ -87,5 +133,4 @@ left_join(wv, population) %>%
   theme_void() +
   theme(panel.grid.major = element_line(colour = 'transparent')) +
   labs(title="Oxycodone and hydrocodone pills in West Virginia per person", caption="Source: The Washington Post, ARCOS")
-
 
