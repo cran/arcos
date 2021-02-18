@@ -1,7 +1,7 @@
-b92632131dba92ff3e32163851274de0 *DESCRIPTION
+0af5d8953b05e988370f8683e3188216 *DESCRIPTION
 48ad4bdfca1ecabce03f7ab8408354c4 *LICENSE
 2446a13ccbb183560d58fefccf6dc275 *NAMESPACE
-533b79b1284e9d252eee97091963bd53 *NEWS.md
+1fee5dd6c56a6c7da78edf79459cad9d *NEWS.md
 d220cccf60a4658ab516a55558962dba *R/arcos-package.R
 3c6cf16b80dd9efc213643d4a915876d *R/locations.R
 e5fae1d3a7bbc212a56de4c33f144355 *R/raw.R
@@ -16,7 +16,7 @@ ccdd8bcb21aa422bec1c0a3590af7792 *inst/doc/annual-maps.Rmd
 f910512513d60bc3da21669a25ef3b45 *inst/doc/county-analysis.html
 c6e9b84362d59467d31ef710cf815e7c *inst/doc/individual-drug-mapping.R
 fc5b3e7a4355d9d4ddbf636c93c9bf09 *inst/doc/individual-drug-mapping.Rmd
-d908d3948f384fa68924dad14ed969af *inst/doc/individual-drug-mapping.html
+066f299e130d9cb4a22e187159653dfc *inst/doc/individual-drug-mapping.html
 2ae2f09e30f60511f9f1c63942d88579 *inst/doc/per-capita-pharmacies.R
 c0ea24578e4af0a6a7adeb95ff0afb02 *inst/doc/per-capita-pharmacies.Rmd
 582f6d386255bcadcad9a8dcbcdd40d6 *inst/doc/per-capita-pharmacies.html
